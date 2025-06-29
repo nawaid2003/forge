@@ -1,4 +1,6 @@
 // app/page.tsx
+"use client"; // Mark this as a Client Component
+
 import dynamic from "next/dynamic";
 import { DataProvider } from "@/contexts/data-context";
 import Tutorial from "@/components/tutorial";
