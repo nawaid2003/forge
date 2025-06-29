@@ -1,0 +1,82 @@
+WorkerID,WorkerName,Skills,AvailableSlots,MaxLoadPerPhase,WorkerGroup,QualificationLevel
+W001,Alice Johnson,"Frontend,React,UI/UX,JavaScript","[1,2,3,4,5]",3,Development,4
+W002,Bob Smith,"Database,SQL,DevOps,Infrastructure","[1,2,4,6]",4,Infrastructure,5
+W003,Carol Davis,"React Native,iOS,Android,Mobile","[2,3,4,5]",3,Development,4
+W004,David Wilson,"Graphic Design,Branding,Creative Strategy","[1,3,5,6]",2,Creative,3
+W005,Emma Brown,"SEO,Content Marketing,Analytics,PPC","[1,2,3,5,6]",4,Marketing,5
+W006,Frank Miller,"Full Stack,API Development,System Integration","[2,4,5,6]",3,Development,4
+W007,Grace Lee,"Cybersecurity,Penetration Testing,Compliance","[1,2,3,4]",3,Security,4
+W008,Henry Chen,"Shopify,WooCommerce,Payment Integration","[3,4,5,6]",2,E-commerce,3
+W009,Ivy Taylor,"AWS,Azure,Cloud Architecture,Container Management","[1,2,4,5,6]",4,Infrastructure,5
+W010,Jack Anderson,"Photography,Photo Editing,Visual Storytelling","[1,2,3]",2,Creative,3
+W011,Kate Rodriguez,"Social Media,Content Creation,Community Management","[2,3,4,5]",3,Marketing,3
+W012,Liam O'Connor,"Video Editing,Motion Graphics,Storytelling","[1,3,4,6]",3,Creative,4
+W013,Maya Patel,"Data Science,Python,Business Intelligence,Machine Learning","[1,2,5,6]",3,Analytics,5
+W014,Noah Kim,"Testing,Automation,Bug Tracking,Quality Assurance","[2,3,4,5,6]",4,QA,4
+W015,Olivia Garcia,"CMS,WordPress,Content Strategy","[1,3,4,5]",2,Development,3
+W016,Paul Thompson,"Project Management,Agile,Strategy,Business Analysis","[1,2,3,4,5,6]",5,Management,4
+W017,Quinn Martinez,"Kubernetes,Docker,System Monitoring,APM","[2,4,5,6]",3,Infrastructure,5
+W018,Rachel White,"Salesforce,HubSpot,CRM,Process Automation","[1,2,3]",2,Integration,3
+W019,Sam Jackson,"Blockchain,Smart Contracts,Web3","[3,4,5]",2,Blockchain,4
+W020,Tina Liu,"Load Testing,Performance Optimization,Monitoring","[1,2,3,4,5,6]",4,QA,4
+W021,Uma Singh,"ETL,Data Warehousing,Power BI,Tableau","[1,3,5,6]",3,Analytics,5
+W022,Victor Petrov,"Legal Research,Compliance,Regulatory Affairs","[2,4,6]",2,Legal,5
+W023,Wendy Chang,"Product Management,Go-to-Market,Launch Planning","[1,2,3,4,5]",3,Management,4
+W024,Xavier Dubois,"NLP,Machine Learning,AI,Python","[1,2,4,5,6]",4,AI/ML,5
+W025,Yuki Tanaka,"Unity,Game Design,C#,3D Design","[3,4,5,6]",3,Gaming,4
+W026,Zoe Adams,"Technical Writing,Documentation,API Documentation","[1,2,3,4]",2,Documentation,3
+W027,Aaron Foster,"IoT,Hardware Integration,Sensors,Embedded Systems","[2,3,5,6]",3,IoT,4
+W028,Bella Cooper,"Email Marketing,Automation,Lead Nurturing","[1,2,4,5]",2,Marketing,3
+W029,Carlos Mendez,"Financial Modeling,Budgeting,Excel,Financial Analysis","[1,3,4,5,6]",4,Finance,5
+W030,Diana Ross,"UX Research,Customer Experience,Journey Mapping,User Testing","[1,2,3,4,5]",3,UX/Research,4
+W031,Ethan Park,"Voice UI,Alexa Skills,Voice Recognition","[2,3,4,6]",2,Voice Tech,3
+W032,Fiona Clark,"Event Management,Live Streaming,Technical Production","[1,3,4,5]",3,Events,4
+W033,Gabriel Torres,"Market Research,Survey Design,Competitive Intelligence","[1,2,5,6]",3,Research,4
+W034,Hannah Kim,"Process Improvement,Lean,Six Sigma,Operations","[2,3,4,5,6]",4,Operations,5
+W035,Ian Murphy,"Patent Research,Intellectual Property,Legal Research","[1,4,5,6]",2,Legal,4
+W036,Julia Chen,"Supply Chain,Logistics,Process Optimization","[2,3,4,5]",3,Operations,4
+W037,Kevin Walsh,"Public Relations,Crisis Management,Communication Strategy","[1,2,3,6]",3,PR,4
+W038,Luna Rodriguez,"International Business,Market Entry,Cultural Analysis","[1,3,4,5]",2,Global Strategy,4
+W039,Marcus Johnson,"AR/VR,3D Design,Interactive Media","[3,4,5,6]",2,Immersive Tech,4
+W040,Nina Patel,"ESG,Sustainability,Environmental Consulting","[1,2,4,5]",3,Sustainability,4
+W041,Oliver Smith,"Franchise Systems,Business Modeling,Legal Structure","[2,3,4,5,6]",3,Business Development,4
+W042,Priya Singh,"Audio Production,Podcast Editing,Content Strategy","[1,3,5,6]",2,Content,3
+W043,Quincy Brown,"Help Desk,Ticketing Systems,Customer Service","[1,2,3,4,5,6]",4,Support,3
+W044,Ruby Martinez,"Local SEO,Google My Business,Location Marketing","[1,2,4,5]",3,Local Marketing,3
+W045,Sebastian Lee,"SaaS Architecture,Multi-tenancy,Scalability","[2,3,4,5,6]",4,SaaS,5
+W046,Tara Wilson,"CRO,Landing Pages,A/B Testing,Statistical Analysis","[1,2,3,4]",3,CRO,4
+W047,Ulysses Chang,"Process Automation,Zapier,Workflow Design","[1,3,4,5,6]",3,Automation,4
+W048,Violet Kim,"Influencer Relations,Campaign Management,Negotiation","[1,2,3,5]",2,Influencer Marketing,3
+W049,William Jones,"Training Design,Public Speaking,Curriculum","[2,3,4,5,6]",3,Training,4
+W050,Xara Davis,"Cross-functional,Innovation,Proof of Concept,Research","[1,2,3,4,5,6]",5,Innovation,5
+W001,Alice Johnson,"Frontend,React,UI/UX,JavaScript","[1,2,3,4,5]",3,Development,4
+W051,Error Test Worker,"Python,Java","[1,2,3,4,5,6,7,8]",2,Development,3
+W052,Invalid Load Worker,"React,JavaScript","[1,2,3]",0,Development,4
+W053,Negative Load Worker,"Database,SQL","[2,3,4]",-1,Infrastructure,3
+W054,High Qualification Worker,"AI,Machine Learning","[1,2,3]",3,AI/ML,7
+W055,Zero Qualification Worker,"Testing,QA","[1,2,3]",2,QA,0
+W056,Malformed Skills Worker,TestingAndQA,"[1,2,3]",2,QA,3
+W057,Empty Skills Worker,"","[1,2,3]",2,Development,3
+W058,Invalid Slots Worker,"Python,Django","1,2,3",2,Development,4
+W059,Overloaded Worker,"React,JavaScript,TypeScript","[1,2,3]",1,Development,4
+W060,Missing Group Worker,"Java,Spring","[1,2,3]",2,,4
+W061,Long Name Test Worker With Very Very Long Name That Exceeds Normal Limits,"Python,Django","[1,2,3]",2,Development,4
+W062,Special Chars Worker !@#$,"JavaScript,React","[1,2,3]",2,Development,3
+W063,Decimal Load Worker,"Database,SQL","[1,2,3]",2.5,Infrastructure,4
+W064,String Load Worker,"API,Integration","[1,2,4]","two",Integration,3
+W065,High Load Worker,"Python,Machine Learning","[1,2,3,4,5,6]",10,AI/ML,5
+W066,Single Slot Worker,"Security,Audit","[1]",1,Security,4
+W067,No Slots Worker,"Documentation,Writing","[]",2,Documentation,3
+W068,Invalid Phase Worker,"Marketing,SEO","[0,1,2]",2,Marketing,3
+W069,Mixed Phase Worker,"Analytics,Data","[1,2,a,4]",3,Analytics,4
+W070,Rare Skills Worker,"QuantumComputing,SpaceEngineering,TimeTravel","[1,2,3]",2,Research,5
+W071,Conflict Worker,"Backend,Frontend,DevOps,QA,Marketing","[1,2,3,4,5]",2,Development,4
+W072,High Availability Worker,"Python,Java,JavaScript,React,Angular,Vue","[1,2,3,4,5,6,7,8,9,10]",5,Development,5
+W073,Minimal Worker,"Java","[2]",1,Development,2
+W074,JSON Skills Worker,"{""skill1"":""Python"",""skill2"":""AI""}","[1,2,3]",2,AI/ML,4
+W075,Comma Issue Worker,"Python,,Java,","[1,2,3]",2,Development,3
+W076,Qualification Range Worker,"Testing,Automation","[1,2,3]",2,QA,6
+W077,Missing Name Worker,"","React,JavaScript","[1,2,3]",2,Development,3
+W078,Null Value Worker,NULL,"NULL","NULL",NULL,NULL
+W079,Whitespace Worker,"  Python  ,  Django  ","[1, 2, 3]",2,Development,4
+W080,Edge Case Comprehensive,"Python,Java,JavaScript,React,Angular,Vue,Node.js,Docker,Kubernetes,AWS,Azure,GCP,Machine Learning,AI,Data Science,Analytics,Database,SQL,NoSQL,MongoDB,PostgreSQL,MySQL,Redis,Elasticsearch,Apache,Nginx,Linux,Windows,MacOS,iOS,Android,Swift,Kotlin,Objective-C,C++,C#,Go,Rust,Ruby,PHP,Perl,Scala,R,Matlab,Tableau,Power BI,Excel,Git,SVN,Jira,Confluence,Slack,Teams,Zoom,Figma,Sketch,Photoshop,Illustrator,InDesign,Premiere,After Effects,Blender,Unity,Unreal,3ds Max,Maya,AutoCAD,SolidWorks","[1,2,3,4,5,6,7,8,9,10,11,12]",8,Polymath,5
