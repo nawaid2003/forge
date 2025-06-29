@@ -13,9 +13,10 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
-      fs: false,
-      net: false,
-      tls: false,
+      fs: false, // Disable fs for client-side
+      net: false, // Disable net for client-side
+      tls: false, // Disable tls for client-side
+      child_process: false, // Disable child_process if used
     };
     return config;
   },
