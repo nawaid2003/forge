@@ -1,8 +1,15 @@
 // app/page.tsx
-import dynamic from "next/dynamic";
+"use client";
 
-const ClientPage = dynamic(() => import("./ClientPage"), { ssr: false });
+import { DataProvider } from "@/contexts/data-context";
+import MainContent from "./MainContent";
+import Tutorial from "@/components/tutorial";
 
 export default function HomePage() {
-  return <ClientPage />;
+  return (
+    <DataProvider>
+      <MainContent />
+      <Tutorial />
+    </DataProvider>
+  );
 }
