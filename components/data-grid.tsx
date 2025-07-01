@@ -28,13 +28,58 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import NaturalLanguageSearch from "./natural-language-search";
+
+interface Client {
+  ClientID: string;
+  ClientName: string;
+  PriorityLevel: number;
+  RequestedTaskIDs: string;
+  GroupTag: string;
+  AttributesJSON: string;
+}
+
+interface Worker {
+  WorkerID: string;
+  WorkerName: string;
+  Skills: string;
+  AvailableSlots: string;
+  MaxLoadPerPhase: number;
+  WorkerGroup: string;
+  QualificationLevel: number;
+}
+
+interface Task {
+  TaskID: string;
+  TaskName: string;
+  Category: string;
+  Duration: number;
+  RequiredSkills: string;
+  PreferredPhases: string;
+  MaxConcurrent: number;
+}
+
+type EntityType = "clients" | "workers" | "tasks";
+
+interface DataState {
+  clients: Client[];
+  workers: Worker[];
+  tasks: Task[];
+  validationErrors: {
+    entity: string;
+    row: number;
+    field: string;
+    message: string;
+  }[];
+}
 
 export default function DataGrid({ type }: { type?: string }) {
   const { state, dispatch } = useData();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState(type || "tasks");
+  const [activeTab, setActiveTab] = useState<EntityType>(
+    (type as EntityType) || "clients"
+  );
   const [editedData, setEditedData] = useState({
     clients: [...state.clients],
     workers: [...state.workers],
@@ -42,33 +87,64 @@ export default function DataGrid({ type }: { type?: string }) {
   });
 
   useEffect(() => {
+    console.log("state.clients:", state.clients);
+    console.log("editedData.clients:", editedData.clients);
     setEditedData({
-      clients: [...state.clients],
-      workers: [...state.workers],
-      tasks: [...state.tasks],
+      clients: state.clients.filter(
+        (item: any): item is Client =>
+          item && typeof item === "object" && "ClientID" in item
+      ),
+      workers: state.workers.filter(
+        (item: any): item is Worker =>
+          item && typeof item === "object" && "WorkerID" in item
+      ),
+      tasks: state.tasks.filter(
+        (item: any): item is Task =>
+          item && typeof item === "object" && "TaskID" in item
+      ),
     });
   }, [state.clients, state.workers, state.tasks]);
 
-  const handleEdit = (
-    type: string,
+  const handleEdit = <T extends EntityType>(
+    type: T,
     index: number,
-    field: string,
-    value: any
+    field: T extends "clients"
+      ? keyof Client
+      : T extends "workers"
+      ? keyof Worker
+      : keyof Task,
+    value: string
   ) => {
-    const newData = [...editedData[type as keyof typeof editedData]];
+    const newData = [...editedData[type]];
+    // Store value as string in editedData
     newData[index] = { ...newData[index], [field]: value };
     setEditedData({ ...editedData, [type]: newData });
 
-    const errors = validateData(
-      [newData[index]],
-      type as "clients" | "workers" | "tasks",
-      state
-    );
+    // Convert to number for numeric fields when validating or dispatching
+    const convertedData = {
+      ...newData[index],
+      ...(type === "tasks" && field === "Duration"
+        ? { Duration: Number(value) }
+        : {}),
+      ...(type === "tasks" && field === "MaxConcurrent"
+        ? { MaxConcurrent: Number(value) }
+        : {}),
+      ...(type === "clients" && field === "PriorityLevel"
+        ? { PriorityLevel: Number(value) }
+        : {}),
+      ...(type === "workers" && field === "MaxLoadPerPhase"
+        ? { MaxLoadPerPhase: Number(value) }
+        : {}),
+      ...(type === "workers" && field === "QualificationLevel"
+        ? { QualificationLevel: Number(value) }
+        : {}),
+    };
+    const errors = validateData([convertedData], type, state);
     dispatch({ type: "SET_VALIDATION_ERRORS", payload: errors });
   };
 
-  const handleSave = (type: string, index: number) => {
-    const newData = [...editedData[type as keyof typeof editedData]];
+  const handleSave = (type: EntityType, index: number) => {
+    const newData = [...editedData[type]];
     dispatch({
       type: {
         clients: "UPDATE_CLIENT",
@@ -77,37 +153,44 @@ export default function DataGrid({ type }: { type?: string }) {
       }[type],
       payload: { index, [type]: newData[index] },
     });
-    const allErrors = validateData(
-      editedData[type as keyof typeof editedData],
-      type as "clients" | "workers" | "tasks",
-      state
-    );
+    const allErrors = validateData(editedData[type], type, state);
     dispatch({ type: "SET_VALIDATION_ERRORS", payload: allErrors });
   };
 
-  const filterData = (type: string, data: any[]) => {
-    if (!searchQuery) return data;
+  const filterData = (type: EntityType, data: Client[] | Worker[] | Task[]) => {
+    if (!searchQuery)
+      return data.filter((item) => item && typeof item === "object");
+
     const queryLower = searchQuery.toLowerCase();
+    if (type === "tasks") {
+      return (data as Task[]).filter((item) => {
+        if (!item || typeof item !== "object" || !("TaskID" in item)) {
+          console.warn(`Skipping invalid task:`, item);
+          return false;
+        }
+        if (queryLower.includes("duration") && queryLower.includes("phase")) {
+          const duration = item.Duration || 0;
+          const phases = normalizePhases(item.PreferredPhases || []);
+          const hasPhase2 = phases.includes(2);
+          const durationGt1 = duration > 1;
+          return (
+            (queryLower.includes("more than 1") ? durationGt1 : true) &&
+            (queryLower.includes("phase 2") ? hasPhase2 : true)
+          );
+        }
+        return JSON.stringify(item).toLowerCase().includes(queryLower);
+      });
+    }
     return data.filter((item) => {
-      if (
-        type === "tasks" &&
-        queryLower.includes("duration") &&
-        queryLower.includes("phase")
-      ) {
-        const duration = parseInt(item.Duration) || 0;
-        const phases = normalizePhases(item.PreferredPhases || []);
-        const hasPhase2 = phases.includes(2);
-        const durationGt1 = duration > 1;
-        return (
-          (queryLower.includes("more than 1") ? durationGt1 : true) &&
-          (queryLower.includes("phase 2") ? hasPhase2 : true)
-        );
+      if (!item || typeof item !== "object") {
+        console.warn(`Skipping invalid item in ${type}:`, item);
+        return false;
       }
       return JSON.stringify(item).toLowerCase().includes(queryLower);
     });
   };
 
-  const headers = {
+  const headers: Record<EntityType, string[]> = {
     clients: [
       "ClientID",
       "ClientName",
@@ -167,10 +250,8 @@ export default function DataGrid({ type }: { type?: string }) {
   return (
     <div className="flex h-screen">
       <main className="flex-1 bg-white p-6">
-        {/* Centered container with proper max width and centering */}
         <div className="max-w-7xl mx-auto">
           <div className="w-full space-y-6">
-            {/* Header section */}
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">
@@ -190,10 +271,9 @@ export default function DataGrid({ type }: { type?: string }) {
               </div>
             </div>
 
-            {/* Tabs with full width */}
             <Tabs
               value={activeTab}
-              onValueChange={setActiveTab}
+              onValueChange={(value) => setActiveTab(value as EntityType)}
               className="space-y-6"
             >
               <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
@@ -228,7 +308,6 @@ export default function DataGrid({ type }: { type?: string }) {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-6">
-                    {/* Search and controls section */}
                     <div className="flex flex-col sm:flex-row gap-4 mb-6">
                       <div className="flex-1">
                         <Input
@@ -246,7 +325,6 @@ export default function DataGrid({ type }: { type?: string }) {
 
                     {state.tasks.length > 0 ? (
                       <>
-                        {/* Table container with better spacing */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                           <div className="overflow-x-auto">
                             <Table>
@@ -268,6 +346,14 @@ export default function DataGrid({ type }: { type?: string }) {
                               <TableBody>
                                 {filterData("tasks", editedData.tasks).map(
                                   (item, index) => {
+                                    if (!item || !("TaskID" in item)) {
+                                      console.warn(
+                                        `Invalid task at index ${index}:`,
+                                        item
+                                      );
+                                      return null;
+                                    }
+                                    const task = item as Task;
                                     const errors =
                                       state.validationErrors.filter(
                                         (e: { entity: string; row: number }) =>
@@ -276,7 +362,7 @@ export default function DataGrid({ type }: { type?: string }) {
                                       );
                                     return (
                                       <TableRow
-                                        key={index}
+                                        key={task.TaskID || index}
                                         className="bg-white hover:bg-gray-50 transition-colors"
                                       >
                                         {headers.tasks.map((field) => {
@@ -293,12 +379,22 @@ export default function DataGrid({ type }: { type?: string }) {
                                                 <Tooltip>
                                                   <TooltipTrigger asChild>
                                                     <Input
-                                                      value={item[field] || ""}
+                                                      value={
+                                                        field === "Duration" ||
+                                                        field ===
+                                                          "MaxConcurrent"
+                                                          ? task[
+                                                              field as keyof Task
+                                                            ]?.toString() ?? ""
+                                                          : task[
+                                                              field as keyof Task
+                                                            ] ?? ""
+                                                      }
                                                       onChange={(e) =>
                                                         handleEdit(
                                                           "tasks",
                                                           index,
-                                                          field,
+                                                          field as keyof Task,
                                                           e.target.value
                                                         )
                                                       }
@@ -345,7 +441,6 @@ export default function DataGrid({ type }: { type?: string }) {
                           </div>
                         </div>
 
-                        {/* Additional components in a grid layout */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                           <div>
                             <ValidationSummary type="tasks" />
@@ -421,6 +516,14 @@ export default function DataGrid({ type }: { type?: string }) {
                               <TableBody>
                                 {filterData("workers", editedData.workers).map(
                                   (item, index) => {
+                                    if (!item || !("WorkerID" in item)) {
+                                      console.warn(
+                                        `Invalid worker at index ${index}:`,
+                                        item
+                                      );
+                                      return null;
+                                    }
+                                    const worker = item as Worker;
                                     const errors =
                                       state.validationErrors.filter(
                                         (e: { entity: string; row: number }) =>
@@ -429,7 +532,7 @@ export default function DataGrid({ type }: { type?: string }) {
                                       );
                                     return (
                                       <TableRow
-                                        key={index}
+                                        key={worker.WorkerID || index}
                                         className="bg-white hover:bg-gray-50 transition-colors"
                                       >
                                         {headers.workers.map((field) => {
@@ -446,12 +549,16 @@ export default function DataGrid({ type }: { type?: string }) {
                                                 <Tooltip>
                                                   <TooltipTrigger asChild>
                                                     <Input
-                                                      value={item[field] || ""}
+                                                      value={
+                                                        worker[
+                                                          field as keyof Worker
+                                                        ] ?? ""
+                                                      }
                                                       onChange={(e) =>
                                                         handleEdit(
                                                           "workers",
                                                           index,
-                                                          field,
+                                                          field as keyof Worker,
                                                           e.target.value
                                                         )
                                                       }
@@ -573,6 +680,14 @@ export default function DataGrid({ type }: { type?: string }) {
                               <TableBody>
                                 {filterData("clients", editedData.clients).map(
                                   (item, index) => {
+                                    if (!item || !("ClientID" in item)) {
+                                      console.warn(
+                                        `Invalid client at index ${index}:`,
+                                        item
+                                      );
+                                      return null;
+                                    }
+                                    const client = item as Client;
                                     const errors =
                                       state.validationErrors.filter(
                                         (e: { entity: string; row: number }) =>
@@ -581,7 +696,7 @@ export default function DataGrid({ type }: { type?: string }) {
                                       );
                                     return (
                                       <TableRow
-                                        key={index}
+                                        key={client.ClientID || index}
                                         className="bg-white hover:bg-gray-50 transition-colors"
                                       >
                                         {headers.clients.map((field) => {
@@ -598,12 +713,16 @@ export default function DataGrid({ type }: { type?: string }) {
                                                 <Tooltip>
                                                   <TooltipTrigger asChild>
                                                     <Input
-                                                      value={item[field] || ""}
+                                                      value={
+                                                        client[
+                                                          field as keyof Client
+                                                        ] ?? ""
+                                                      }
                                                       onChange={(e) =>
                                                         handleEdit(
                                                           "clients",
                                                           index,
-                                                          field,
+                                                          field as keyof Client,
                                                           e.target.value
                                                         )
                                                       }

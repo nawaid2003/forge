@@ -22,6 +22,7 @@ interface TutorialStep {
 }
 
 export default function Tutorial() {
+  const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -110,6 +111,7 @@ export default function Tutorial() {
         );
       };
     }
+    setIsMobile(window.innerWidth < 768);
   }, [currentStep, isVisible]);
 
   const handleNext = () => {
@@ -144,7 +146,7 @@ export default function Tutorial() {
   }
 
   const { title, description, tip, position } = steps[currentStep];
-  const isMobile = window.innerWidth < 768;
+  // const isMobile = window.innerWidth < 768;
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
